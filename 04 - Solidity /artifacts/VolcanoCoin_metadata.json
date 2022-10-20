@@ -44,18 +44,24 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "recipient",
+						"name": "to",
 						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "TransferExecuted",
+				"name": "Sent",
 				"type": "event"
 			},
 			{
@@ -192,11 +198,11 @@
 	},
 	"sources": {
 		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": {
-			"keccak256": "0xd1d9558d8901caf76dc2a4b6d35c3b66f971e4d739652b9b20b7b64b2fd345a3",
+			"keccak256": "0xd387aae44402c7569dae9262daf592910a79214ef1dee0a35d1f3c1dc649912a",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://8f4a52c15ade2c850c375e3758cd7dfc3f29073d0f60f7b6af59ad8b43a30a1d",
-				"dweb:/ipfs/QmW2yJAwuuK2cKZ3LiqzyLAjE8Gr5J9DZ8vG2rb4E8gWAd"
+				"bzz-raw://40e9d67df46964deb9efe1b27104ae5683132aea2ca6aeeb6dd5d9f4d707da6e",
+				"dweb:/ipfs/QmUUUx7WFe5WM1yi5TynXBHJgikRBr8HiKSguGWMqWtEA1"
 			]
 		}
 	},

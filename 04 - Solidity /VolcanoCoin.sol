@@ -17,14 +17,13 @@ contract VolcanoCoin
     mapping(address => Payment[]) public paymentsByAddress;
     
     event IncrementTotalSupply(uint256 newTotalSupply);
-    event TransferExecuted(uint256 amount, address recipient);
+    event Sent(address from, address to, uint256 amount);
 
     error InsufficientBalance(uint256 requested, uint256 available);
 
     modifier onlyOwner {
-        if (msg.sender == owner) {
+        if (msg.sender == owner)
             _;
-        }
     }
 
     constructor() {
@@ -53,21 +52,18 @@ contract VolcanoCoin
     }
 
     function transferAmountToAddress(uint256 amnt, address recipient) public {
-        if (balanceByAddress[msg.sender] > amnt) 
-        {
-            balanceByAddress[msg.sender] -= amnt;
-            balanceByAddress[recipient] += amnt;
-
-            // record senders transaction history
-            paymentsByAddress[msg.sender].push(Payment({amount: amnt, recipient: recipient}));
-            
-            emit TransferExecuted(amnt, recipient);
-        } else {
-            // Oops, you're too poor
+        if (amnt > balanceByAddress[msg.sender]) // Oops, you're too poor
             revert InsufficientBalance({
                 requested: amnt, 
                 available: balanceByAddress[msg.sender]
                 });
-        }
+
+        balanceByAddress[msg.sender] -= amnt;
+        balanceByAddress[recipient] += amnt;
+
+        // record senders transaction history
+        paymentsByAddress[msg.sender].push(Payment({amount: amnt, recipient: recipient}));
+        
+        emit Sent(msg.sender, recipient, amnt);
     }
 }
