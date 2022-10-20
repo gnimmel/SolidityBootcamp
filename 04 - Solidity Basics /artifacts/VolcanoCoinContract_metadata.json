@@ -1,0 +1,90 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "getAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "retrieve",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "num",
+						"type": "uint256"
+					}
+				],
+				"name": "store",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": "VolcanoCoinContract"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": {
+			"keccak256": "0x7126b46574102907e8fea3b59cb52e6830afbe1354a36f229fe234f02324cd00",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://40ee5e9b9682749b01bd1a3a929b98ff2ae4571b32454c78c1db58d2f97f3828",
+				"dweb:/ipfs/QmeJupuyvHouYojJWfRcgVJbW5RyudusK5qWPxVEXnQ7uq"
+			]
+		}
+	},
+	"version": 1
+}
