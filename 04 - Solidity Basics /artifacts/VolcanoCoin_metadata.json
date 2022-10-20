@@ -44,18 +44,24 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "recipient",
+						"name": "to",
 						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "TransferExecuted",
+				"name": "Sent",
 				"type": "event"
 			},
 			{
@@ -177,7 +183,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": "VolcanoCoin"
+			"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity Basics /VolcanoCoin.sol": "VolcanoCoin"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -191,12 +197,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": {
-			"keccak256": "0x44194f81063db3ad4bcf00e9ddb43f4bc2b40a5858f73498d31c3492542f79c5",
+		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity Basics /VolcanoCoin.sol": {
+			"keccak256": "0x2d83df33469830983f1f28399577b91c91e6df92340f460b7f949ad60d5a22dc",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://555db2d12b73989c8b558f788ff29d3db7510f12dcf9148aacae31f877771ffb",
-				"dweb:/ipfs/QmVdoTztmuWk1igXrSgNPdUJovZsgHJp9oMzhdGP8szwMu"
+				"bzz-raw://a9186e6288701958fff7c3ea08cb71bbcdfce9dc5c45d32bdcfb7532dc747769",
+				"dweb:/ipfs/QmdnUfyTe9wfvRLYiH5LVTAkeF61UHcuQCKSW18sAXm33Q"
 			]
 		}
 	},
