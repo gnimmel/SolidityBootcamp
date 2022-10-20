@@ -1,0 +1,204 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "requested",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "available",
+						"type": "uint256"
+					}
+				],
+				"name": "InsufficientBalance",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newTotalSupply",
+						"type": "uint256"
+					}
+				],
+				"name": "IncrementTotalSupply",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"name": "TransferExecuted",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "balanceByAddress",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amnt",
+						"type": "uint256"
+					}
+				],
+				"name": "incrementTotalSupplyBy",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "_totalSupply",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "incrementTotalSupplyByThousand",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "paymentsByAddress",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amnt",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"name": "transferAmountToAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": "VolcanoCoin"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": {
+			"keccak256": "0xd1d9558d8901caf76dc2a4b6d35c3b66f971e4d739652b9b20b7b64b2fd345a3",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://8f4a52c15ade2c850c375e3758cd7dfc3f29073d0f60f7b6af59ad8b43a30a1d",
+				"dweb:/ipfs/QmW2yJAwuuK2cKZ3LiqzyLAjE8Gr5J9DZ8vG2rb4E8gWAd"
+			]
+		}
+	},
+	"version": 1
+}
