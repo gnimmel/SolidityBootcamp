@@ -198,11 +198,11 @@
 	},
 	"sources": {
 		"Users/eggs/Desktop/SolidityBootcamp/04 - Solidity /VolcanoCoin.sol": {
-			"keccak256": "0xd387aae44402c7569dae9262daf592910a79214ef1dee0a35d1f3c1dc649912a",
+			"keccak256": "0x2d83df33469830983f1f28399577b91c91e6df92340f460b7f949ad60d5a22dc",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://40e9d67df46964deb9efe1b27104ae5683132aea2ca6aeeb6dd5d9f4d707da6e",
-				"dweb:/ipfs/QmUUUx7WFe5WM1yi5TynXBHJgikRBr8HiKSguGWMqWtEA1"
+				"bzz-raw://a9186e6288701958fff7c3ea08cb71bbcdfce9dc5c45d32bdcfb7532dc747769",
+				"dweb:/ipfs/QmdnUfyTe9wfvRLYiH5LVTAkeF61UHcuQCKSW18sAXm33Q"
 			]
 		}
 	},

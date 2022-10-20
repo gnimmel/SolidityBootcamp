@@ -6,7 +6,7 @@ contract VolcanoCoin
 {
     address immutable owner;
 
-    uint256 totalSupply = 10000; // Just read a 2016 post stating that unit8 costs more gas than unit256 ...does this still hold true? I would assume that applies to anything smaller than 256? 
+    uint256 totalSupply = 10000; // Just read a 2016 post stating that uint8 costs more gas than uint256 ...does this still hold true? I would assume that applies to 16, 32, etc? 
     
     struct Payment {
         uint256 amount;
