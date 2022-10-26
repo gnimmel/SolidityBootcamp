@@ -42,3 +42,7 @@ You're nearly there! Here's the last clue:
 0x18acF9DEB7F9535F4848a286b68C729AAc55697a
 
 TreasureChest.sol
+
+
+Interface:
+https://gist.github.com/letsgitcracking/239306ea9f08d7e270f9d7e5245bdd2b

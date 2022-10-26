@@ -14,7 +14,7 @@ contract VolcanoCoin is Ownable
     }
 
     mapping(address => uint256) public balanceByAddress;
-    mapping(address => Payment[]) public paymentsByAddress;
+    mapping(address => Payment[]) private paymentsByAddress;
     
     event IncrementTotalSupply(uint256 newTotalSupply);
     event Sent(address from, address to, uint256 amount);
@@ -28,6 +28,10 @@ contract VolcanoCoin is Ownable
 
     function getTotalSupply() public view returns (uint256) {
         return totalSupply;
+    }
+
+    function getUserPaymentHistory(address userAddr) public view returns (Payment[] memory) {
+        return paymentsByAddress[userAddr];
     }
 
     // shouldn't the increment amount be a function param?
@@ -45,8 +49,8 @@ contract VolcanoCoin is Ownable
     function incrementTotalSupplyByThousand() public onlyOwner {
         incrementTotalSupplyBy(1000);
     }
-
-    function transferAmountToAddress(uint256 amnt, address recipient) public {
+    
+    function transferAmountToAddress(uint256 amnt, address recipient) public { // Does this function need 'payable' ??
         if (amnt > balanceByAddress[msg.sender]) // Oops, you're too poor
             revert InsufficientBalance({
                 requested: amnt, 
@@ -57,8 +61,12 @@ contract VolcanoCoin is Ownable
         balanceByAddress[recipient] += amnt;
 
         // record senders transaction history
-        paymentsByAddress[msg.sender].push(Payment({amount: amnt, recipient: recipient}));
+        recordPayment(msg.sender, recipient, amnt);
         
         emit Sent(msg.sender, recipient, amnt);
+    }
+
+    function recordPayment(address from, address to, uint256 amount) private {
+        paymentsByAddress[from].push(Payment({amount: amount, recipient: to}));
     }
 }
