@@ -1,0 +1,6 @@
+[submodule "08 - Security DAO/volcano-foundry/lib/forge-std"]
+	path = 08 - Security DAO/volcano-foundry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "08 - Security DAO/volcanoCoin-foundry/lib/forge-std"]
+	path = 08 - Security DAO/volcanoCoin-foundry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
