@@ -124,15 +124,16 @@ contract GasContract is Ownable, Constants {
         totalSupply = _totalSupply;
 
         for (uint256 ii = 0; ii < administrators.length; ii++) {
-            if (_admins[ii] != address(0)) {
-                administrators[ii] = _admins[ii];
+            address addr = _admins[ii];
+            if (addr != address(0)) {
+                administrators[ii] = addr;
 
-                if (_admins[ii] == contractOwner) {
+                if (addr == contractOwner) {
                     balances[contractOwner] = _totalSupply;
                     emit supplyChanged(contractOwner, _totalSupply);
                 } else {
-                    balances[_admins[ii]] = 0;
-                    emit supplyChanged(_admins[ii], 0);
+                    balances[addr] = 0;
+                    emit supplyChanged(addr, 0);
                 }
             }
         }
