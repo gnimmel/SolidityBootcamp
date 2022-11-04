@@ -129,7 +129,7 @@ contract GasContract is Ownable, Constants {
 
                 if (_admins[ii] == contractOwner) {
                     balances[contractOwner] = _totalSupply;
-                    emit supplyChanged(_admins[ii], _totalSupply);
+                    emit supplyChanged(contractOwner, _totalSupply);
                 } else {
                     balances[_admins[ii]] = 0;
                     emit supplyChanged(_admins[ii], 0);
@@ -263,10 +263,10 @@ contract GasContract is Ownable, Constants {
             "Invalid address"
         );
 
-        address senderOfTx = msg.sender;
-
         for (uint256 ii = 0; ii < payments[_user].length; ii++) {
-            if (payments[_user][ii].paymentID == _ID) {
+            
+            if (payments[_user][ii].paymentID == _ID) 
+            {
                 payments[_user][ii].adminUpdated = true;
                 payments[_user][ii].admin = _user;
                 payments[_user][ii].paymentType = _type;
@@ -276,7 +276,7 @@ contract GasContract is Ownable, Constants {
                 //addHistory(_user);
 
                 emit PaymentUpdated(
-                    senderOfTx,
+                    msg.sender,
                     _ID,
                     _amount,
                     payments[_user][ii].recipientName
