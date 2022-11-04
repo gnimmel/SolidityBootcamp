@@ -350,13 +350,15 @@ contract GasContract is Ownable //, Constants
         balances[msg.sender] += whitelist[msg.sender]; // WHY is the whitelist tier value added to the user balance?
         balances[_recipient] -= whitelist[msg.sender]; 
 
-        whiteListStruct[msg.sender] = ImportantStruct(0, 0, 0);
-        ImportantStruct storage newImportantStruct = whiteListStruct[
-            msg.sender
-        ];
+        delete whiteListStruct[msg.sender]; // = ImportantStruct(0, 0, 0);
+        /*
+        ImportantStruct storage newImportantStruct = whiteListStruct[msg.sender]; // WHY?? function var as storage ?? 
+
         newImportantStruct.valueA = _struct.valueA;
         newImportantStruct.bigValue = _struct.bigValue;
         newImportantStruct.valueB = _struct.valueB;
+        */
+
         emit WhiteListTransfer(_recipient);
     }
 }
