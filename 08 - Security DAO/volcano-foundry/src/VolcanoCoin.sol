@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract VolcanoCoin is Ownable
 {
-    uint256 totalSupply = 10000; // Just read a 2016 post stating that uint8 costs more gas than uint256 ...does this still hold true? I would assume that applies to 16, 32, etc? 
+    uint256 totalSupply = 10000; 
     
     struct Payment {
         uint256 amount;
