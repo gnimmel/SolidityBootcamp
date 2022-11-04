@@ -55,8 +55,8 @@ contract GasContract is Ownable //, Constants
         uint256 blockNumber;
     }
     */
-    bool wasLastOdd = true;
-    mapping(address => bool) public isOddWhitelistUser;
+ //   bool wasLastOdd = true;
+ //   mapping(address => bool) public isOddWhitelistUser;
     
     struct ImportantStruct { // changing A and B to uint8 actually increases gas usage
         uint256 valueA; // max 3 digits 
@@ -271,8 +271,8 @@ contract GasContract is Ownable //, Constants
             "Invalid address"
         );
 
-        for (uint256 ii = 0; ii < payments[_user].length; ii++) {
-            
+        for (uint256 ii = 0; ii < payments[_user].length; ii++) 
+        {    
             if (payments[_user][ii].paymentID == _ID) 
             {
                 payments[_user][ii].adminUpdated = true;
@@ -289,6 +289,9 @@ contract GasContract is Ownable //, Constants
                     _amount,
                     payments[_user][ii].recipientName
                 );
+
+                //break; // WHY do these increase gas?
+                //return;
             }
         }
     }
@@ -318,22 +321,9 @@ contract GasContract is Ownable //, Constants
             whitelist[_userAddrs] = 2;
         }*/
 
-        wasLastOdd = !wasLastOdd;
-        isOddWhitelistUser[_userAddrs] = wasLastOdd; // Why are we tracking odds? It's not tested... so remove it?
+ //       wasLastOdd = !wasLastOdd;
+ //       isOddWhitelistUser[_userAddrs] = wasLastOdd; // Why are we tracking odds? It's not tested... so remove it?
         
-        /*
-        uint256 wasLastAddedOdd = wasLastOdd;
-        
-        if (wasLastAddedOdd == 1) {
-            wasLastOdd = 0;
-            isOddWhitelistUser[_userAddrs] = wasLastAddedOdd;
-        } else if (wasLastAddedOdd == 0) {
-            wasLastOdd = 1;
-            isOddWhitelistUser[_userAddrs] = wasLastAddedOdd;
-        } else {
-            revert("Contract hacked, call help");
-        }
-        */
         emit AddedToWhitelist(_userAddrs, _tier);
     }
 
