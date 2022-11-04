@@ -16,7 +16,7 @@ contract GasContract is Ownable, Constants {
     
     uint8 public tradePercent = 12;
     uint8 public tradeMode;
-    uint256 public totalSupply; // cannot be updated
+    uint256 public immutable totalSupply; // cannot be updated
     
     address[5] public administrators;
     address public contractOwner;
@@ -128,8 +128,8 @@ contract GasContract is Ownable, Constants {
                 administrators[ii] = _admins[ii];
 
                 if (_admins[ii] == contractOwner) {
-                    balances[contractOwner] = totalSupply;
-                    emit supplyChanged(_admins[ii], totalSupply);
+                    balances[contractOwner] = _totalSupply;
+                    emit supplyChanged(_admins[ii], _totalSupply);
                 } else {
                     balances[_admins[ii]] = 0;
                     emit supplyChanged(_admins[ii], 0);
