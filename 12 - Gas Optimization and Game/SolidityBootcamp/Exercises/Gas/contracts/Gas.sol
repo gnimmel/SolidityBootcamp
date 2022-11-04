@@ -45,19 +45,19 @@ contract GasContract is Ownable, Constants {
         address admin; // administrators address
         uint256 amount;
     }
-
+    /*
     struct History {
         uint256 lastUpdate;
         address updatedBy;
         uint256 blockNumber;
     }
-    
+    */
     bool wasLastOdd = true;
 
     mapping(address => bool) public isOddWhitelistUser;
     
-    struct ImportantStruct {
-        uint256 valueA; // max 3 digits
+    struct ImportantStruct { // changing A and B to uint8 actually increases gas usage
+        uint256 valueA; // max 3 digits 
         uint256 bigValue;
         uint256 valueB; // max 3 digits
     }
@@ -216,7 +216,7 @@ contract GasContract is Ownable, Constants {
         balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
         emit Transfer(_recipient, _amount);
-        Payment memory payment;
+        /*Payment memory payment;
         payment.admin = address(0);
         payment.adminUpdated = false;
         payment.paymentType = PaymentType.BasicPayment;
@@ -224,8 +224,16 @@ contract GasContract is Ownable, Constants {
         payment.amount = _amount;
         payment.recipientName = _name;
         payment.paymentID = ++paymentCounter;
-
-        payments[msg.sender].push(payment);
+        */
+        payments[msg.sender].push(Payment({
+            admin: address(0),
+            adminUpdated: false,
+            paymentType: PaymentType.BasicPayment,
+            recipient: _recipient,
+            amount: _amount,
+            recipientName: _name,
+            paymentID: ++paymentCounter
+        }));
         
         bool[] memory status = new bool[](tradePercent); // What exactly is this doing?
 
@@ -241,7 +249,7 @@ contract GasContract is Ownable, Constants {
         uint256 _amount,
         PaymentType _type
     ) external {
-        onlyAdminOrOwner();
+        onlyAdminOrOwner(); // Will revert on fail
         require(
             _ID > 0,
             "ID must be greater than 0"
