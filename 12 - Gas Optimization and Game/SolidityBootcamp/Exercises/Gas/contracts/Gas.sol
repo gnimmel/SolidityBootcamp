@@ -3,26 +3,29 @@ pragma solidity ^0.8.0;
 
 import "./Ownable.sol";
 
-contract Constants {    // This as a seperate contract does NOT appear to effect gas
+/*contract Constants {    // This as a seperate contract does NOT appear to effect gas
     uint8 public tradeFlag = 1;
     //uint256 public basicFlag = 0;
     uint8 public dividendFlag = 1;
-}
+}*/
 
-contract GasContract is Ownable, Constants {
-    bool public isReady = false;
+contract GasContract is Ownable //, Constants 
+{
+    //bool public isReady = false;
     
-    uint8 public paymentCounter; // WHY are you here?
+    uint8 private constant numAdmins = 5;
+
+    uint8 private paymentCounter; // WHY are you here?
     
-    uint8 public tradePercent = 12;
-    uint8 public tradeMode;
+    uint8 private tradePercent = 12;
+    //uint8 public tradeMode;
     uint256 public immutable totalSupply; // cannot be updated
     
-    address[5] public administrators;
-    address public contractOwner;
+    address[numAdmins] public administrators;
+    address private contractOwner;
 
-    mapping(address => uint256) public balances;
-    mapping(address => Payment[]) public payments;
+    mapping(address => uint256) private balances;
+    mapping(address => Payment[]) private payments;
     mapping(address => uint256) public whitelist;
     
     enum PaymentType {
@@ -161,11 +164,11 @@ contract GasContract is Ownable, Constants {
         return balances[_user];
     }
 
-    function getTradingMode() external view returns (bool mode_) {
-        if (tradeFlag == 1 || dividendFlag == 1)
+    function getTradingMode() external pure returns (bool mode_) {
+       // if (tradeFlag == 1 || dividendFlag == 1)
             return true;
-        else
-            return false;
+        //else
+        //    return false;
     }
 
     //function addHistory(address _updateAddress, bool _tradeMode) 
@@ -214,9 +217,12 @@ contract GasContract is Ownable, Constants {
             bytes(_name).length < 9,
             "Name is too long"
         );
+       
         balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
+        
         emit Transfer(_recipient, _amount);
+       
         /*Payment memory payment;
         payment.admin = address(0);
         payment.adminUpdated = false;
