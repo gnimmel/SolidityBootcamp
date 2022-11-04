@@ -146,7 +146,7 @@ contract GasContract is Ownable, Constants {
         return paymentHistory;
     }*/
 
-    function checkForAdmin(address _user) public view returns (bool admin_) {
+    function checkForAdmin(address _user) internal view returns (bool admin_) {
         //bool admin = false;
         for (uint256 ii = 0; ii < administrators.length; ii++) {
             if (administrators[ii] == _user) {
@@ -156,11 +156,11 @@ contract GasContract is Ownable, Constants {
         return false;
     }
 
-    function balanceOf(address _user) public view returns (uint256 balance_) {
+    function balanceOf(address _user) external view returns (uint256 balance_) {
         return balances[_user];
     }
 
-    function getTradingMode() public view returns (bool mode_) {
+    function getTradingMode() external view returns (bool mode_) {
         if (tradeFlag == 1 || dividendFlag == 1)
             return true;
         else
@@ -187,7 +187,7 @@ contract GasContract is Ownable, Constants {
     }*/
 
     function getPayments(address _user)
-        public
+        external
         view
         returns (Payment[] memory payments_)
     {
@@ -202,7 +202,7 @@ contract GasContract is Ownable, Constants {
         address _recipient,
         uint256 _amount,
         string calldata _name
-    ) public returns (bool status_) 
+    ) external returns (bool status_) 
     {
         //address senderOfTx = msg.sender;
         require(
@@ -240,7 +240,7 @@ contract GasContract is Ownable, Constants {
         uint256 _ID,
         uint256 _amount,
         PaymentType _type
-    ) public {
+    ) external {
         onlyAdminOrOwner();
         require(
             _ID > 0,
@@ -278,7 +278,7 @@ contract GasContract is Ownable, Constants {
     }
 
     function addToWhitelist(address _userAddrs, uint256 _tier)
-        public
+        external
         //onlyAdminOrOwner
     {
         onlyAdminOrOwner();
@@ -325,7 +325,7 @@ contract GasContract is Ownable, Constants {
         address _recipient,
         uint256 _amount,
         ImportantStruct memory _struct
-    ) public 
+    ) external 
     {
         require(
             whitelist[msg.sender] > 0,
@@ -341,8 +341,8 @@ contract GasContract is Ownable, Constants {
         );
         balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
-        balances[msg.sender] += whitelist[msg.sender];
-        balances[_recipient] -= whitelist[msg.sender];
+        balances[msg.sender] += whitelist[msg.sender]; // WHY is the whitelist tier value added to the user balance?
+        balances[_recipient] -= whitelist[msg.sender]; 
 
         whiteListStruct[msg.sender] = ImportantStruct(0, 0, 0);
         ImportantStruct storage newImportantStruct = whiteListStruct[
