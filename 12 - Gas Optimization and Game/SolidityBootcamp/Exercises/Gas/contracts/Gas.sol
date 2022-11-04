@@ -13,7 +13,7 @@ contract GasContract is Ownable //, Constants
 {
     //bool public isReady = false;
     
-    uint8 private constant numAdmins = 5;
+    //uint8 private constant numAdmins = 5;
 
     uint8 private paymentCounter; // WHY are you here?
     
@@ -21,7 +21,7 @@ contract GasContract is Ownable //, Constants
     //uint8 public tradeMode;
     uint256 public immutable totalSupply; // cannot be updated
     
-    address[numAdmins] public administrators;
+    address[5] public administrators;
     address private contractOwner;
 
     mapping(address => uint256) private balances;
@@ -56,7 +56,6 @@ contract GasContract is Ownable //, Constants
     }
     */
     bool wasLastOdd = true;
-
     mapping(address => bool) public isOddWhitelistUser;
     
     struct ImportantStruct { // changing A and B to uint8 actually increases gas usage
@@ -242,12 +241,14 @@ contract GasContract is Ownable //, Constants
             paymentID: ++paymentCounter
         }));
         
-        bool[] memory status = new bool[](tradePercent); // What exactly is this doing?
+        /*bool[] memory status = new bool[](tradePercent); // What exactly is this doing?
 
         for (uint256 i = 0; i < tradePercent; i++) {
             status[i] = true;
         }
         return (status[0] == true);
+        */
+        return tradePercent > 0;
     }
 
     function updatePayment(
