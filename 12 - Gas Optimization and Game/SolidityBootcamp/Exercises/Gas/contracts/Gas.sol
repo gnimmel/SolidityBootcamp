@@ -66,30 +66,37 @@ contract GasContract is Ownable, Constants {
 
     event AddedToWhitelist(address userAddress, uint256 tier);
 
-    modifier onlyAdminOrOwner() {
-        address senderOfTx = msg.sender;
-        if (checkForAdmin(senderOfTx)) {
+    function onlyAdminOrOwner() internal view {
+        //address senderOfTx = msg.sender;
+        if (!checkForAdmin(msg.sender) && (msg.sender != contractOwner))
+            revert(
+                "Caller not admin and not owner"
+            );
+        
+        /*
+        if (checkForAdmin(msg.sender)) {
             require(
-                checkForAdmin(senderOfTx),
+                checkForAdmin(msg.sender),
                 "Caller not admin"
             );
             _;
-        } else if (senderOfTx == contractOwner) {
+        } else if (msg.sender == contractOwner) {
             _;
         } else {
             revert(
                 "Caller not admin and not owner"
             );
         }
+        */
     }
-
+    /*
     modifier checkIfWhiteListed(address sender) {
-        address senderOfTx = msg.sender;
+        //address senderOfTx = msg.sender;
         require(
-            senderOfTx == sender,
+            msg.sender == sender,
             "Originator was not the sender"
         );
-        uint256 usersTier = whitelist[senderOfTx];
+        uint256 usersTier = whitelist[msg.sender];
         require(
             usersTier > 0,
             "User is not whitelisted"
@@ -100,7 +107,7 @@ contract GasContract is Ownable, Constants {
         );
         _;
     }
-
+    */
     event supplyChanged(address indexed, uint256 indexed);
     event Transfer(address recipient, uint256 amount);
     event PaymentUpdated(
@@ -140,13 +147,13 @@ contract GasContract is Ownable, Constants {
     }*/
 
     function checkForAdmin(address _user) public view returns (bool admin_) {
-        bool admin = false;
+        //bool admin = false;
         for (uint256 ii = 0; ii < administrators.length; ii++) {
             if (administrators[ii] == _user) {
-                admin = true;
+                return true;
             }
         }
-        return admin;
+        return false;
     }
 
     function balanceOf(address _user) public view returns (uint256 balance_) {
@@ -233,7 +240,8 @@ contract GasContract is Ownable, Constants {
         uint256 _ID,
         uint256 _amount,
         PaymentType _type
-    ) public onlyAdminOrOwner {
+    ) public {
+        onlyAdminOrOwner();
         require(
             _ID > 0,
             "ID must be greater than 0"
@@ -271,8 +279,9 @@ contract GasContract is Ownable, Constants {
 
     function addToWhitelist(address _userAddrs, uint256 _tier)
         public
-        onlyAdminOrOwner
+        //onlyAdminOrOwner
     {
+        onlyAdminOrOwner();
         require(
             _tier < 255,
             "Tier must be < 255"
@@ -316,24 +325,28 @@ contract GasContract is Ownable, Constants {
         address _recipient,
         uint256 _amount,
         ImportantStruct memory _struct
-    ) public checkIfWhiteListed(msg.sender) {
-        address senderOfTx = msg.sender;
+    ) public 
+    {
         require(
-            balances[senderOfTx] >= _amount,
+            whitelist[msg.sender] > 0,
+            "User is not whitelisted"
+        );
+        require(
+            balances[msg.sender] >= _amount,
             "Insufficient Balance"
         );
         require(
             _amount > 3,
             "Amount must be > 3"
         );
-        balances[senderOfTx] -= _amount;
+        balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
-        balances[senderOfTx] += whitelist[senderOfTx];
-        balances[_recipient] -= whitelist[senderOfTx];
+        balances[msg.sender] += whitelist[msg.sender];
+        balances[_recipient] -= whitelist[msg.sender];
 
-        whiteListStruct[senderOfTx] = ImportantStruct(0, 0, 0);
+        whiteListStruct[msg.sender] = ImportantStruct(0, 0, 0);
         ImportantStruct storage newImportantStruct = whiteListStruct[
-            senderOfTx
+            msg.sender
         ];
         newImportantStruct.valueA = _struct.valueA;
         newImportantStruct.bigValue = _struct.bigValue;
