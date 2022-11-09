@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./Ownable.sol";
+//import "./Ownable.sol";
 
 /*contract Constants {    // This as a seperate contract does NOT appear to effect gas
     uint8 public tradeFlag = 1;
@@ -9,7 +9,7 @@ import "./Ownable.sol";
     uint8 public dividendFlag = 1;
 }*/
 
-contract GasContract is Ownable //, Constants 
+contract GasContract //is Ownable //, Constants 
 {
     //bool public isReady = false;
     
@@ -40,13 +40,13 @@ contract GasContract is Ownable //, Constants
     //History[] public paymentHistory; // when a payment was updated
 
     struct Payment {
-        PaymentType paymentType;
-        uint256 paymentID;
         bool adminUpdated;
-        string recipientName; // max 8 characters
+        uint256 paymentID;
+        uint256 amount;
         address recipient;
         address admin; // administrators address
-        uint256 amount;
+        string recipientName; // max 8 characters
+        PaymentType paymentType;
     }
     /*
     struct History {
@@ -125,7 +125,7 @@ contract GasContract is Ownable //, Constants
         contractOwner = msg.sender;
         totalSupply = _totalSupply;
 
-        for (uint256 ii = 0; ii < administrators.length; ii++) {
+        for (uint256 ii = 0; ii < administrators.length;) {
             address addr = _admins[ii];
             if (addr != address(0)) {
                 administrators[ii] = addr;
@@ -138,6 +138,7 @@ contract GasContract is Ownable //, Constants
                     emit supplyChanged(addr, 0);
                 }
             }
+            unchecked{ ii++; }
         }
     }
 
@@ -271,7 +272,7 @@ contract GasContract is Ownable //, Constants
             "Invalid address"
         );
 
-        for (uint256 ii = 0; ii < payments[_user].length; ii++) 
+        for (uint256 ii = 0; ii < payments[_user].length;) 
         {    
             if (payments[_user][ii].paymentID == _ID) 
             {
@@ -293,6 +294,7 @@ contract GasContract is Ownable //, Constants
                 //break; // WHY do these increase gas?
                 //return;
             }
+            unchecked{ ii++; }
         }
     }
 
@@ -330,7 +332,7 @@ contract GasContract is Ownable //, Constants
     function whiteTransfer(
         address _recipient,
         uint256 _amount,
-        ImportantStruct memory _struct
+        ImportantStruct calldata _struct
     ) external 
     {
         require(
@@ -345,10 +347,13 @@ contract GasContract is Ownable //, Constants
             _amount > 3,
             "Amount must be > 3"
         );
-        balances[msg.sender] -= _amount;
-        balances[_recipient] += _amount;
-        balances[msg.sender] += whitelist[msg.sender]; // WHY is the whitelist tier value added to the user balance?
-        balances[_recipient] -= whitelist[msg.sender]; 
+        unchecked {
+            uint256 tmp = _amount - whitelist[msg.sender];
+            balances[msg.sender] -= tmp;
+            balances[_recipient] += tmp;
+            //balances[msg.sender] += whitelist[msg.sender]; // WHY is the whitelist tier value added to the user balance?
+            //balances[_recipient] -= whitelist[msg.sender]; 
+        }
 
         delete whiteListStruct[msg.sender]; // = ImportantStruct(0, 0, 0);
         /*
