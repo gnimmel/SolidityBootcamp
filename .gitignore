@@ -71,3 +71,7 @@ certora_*
 out/
 out.json
 .idea
+
+/cache
+/node_modules
+/out
