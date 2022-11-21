@@ -9,13 +9,15 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 import {SafeTransferLib} from "@solmate/utils/SafeTransferLib.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
+import "@solmate/utils/ReentrancyGuard.sol";
+import "lib/forge-std/src/console2.sol";
 
 error TokenDoesNotExist();
 error MaxSupplyReached();
 error WrongTokenAmount();
 error MaxNumPerTxReached();
 error NoTokenBalance();
-error IndexOutOfBounds();
+error InvalidTokenIndex();
 error ContractPaused();
 
 contract VolcanoNFT is ERC721, Owned 
@@ -31,7 +33,7 @@ contract VolcanoNFT is ERC721, Owned
         uint256 price;
     }
 
-    Token[] private AllowedTokens;
+    Token[] private AllowedPaymentTokens;
 
     //LavaERC20 internal immutable lavaToken; // = ERC20('address to LAVA ERC20 Token');
 
@@ -50,6 +52,7 @@ contract VolcanoNFT is ERC721, Owned
     ) ERC721(_name, _symbol) Owned(msg.sender)
     {
         baseURI = _baseURI;
+        //console2.log("VolcanoNFT constructor");
     }
 
     function addPayToken(
@@ -57,7 +60,9 @@ contract VolcanoNFT is ERC721, Owned
         string calldata _symbol,
         uint256 _price
     ) public onlyOwner {
-        AllowedTokens.push(
+        //for (uint256 i = 0; i < AllowedPaymentTokens.length; i++) {}
+
+        AllowedPaymentTokens.push(
             Token({
                 token: _token,
                 symbol: _symbol,
@@ -66,27 +71,43 @@ contract VolcanoNFT is ERC721, Owned
         );
     }
 
+    function getPaymentOptions() external view returns(Token[] memory) {
+        return AllowedPaymentTokens;
+    }
+
     function mint(address _to, uint256 _numToMint, uint256 _tokenIndx) public payable
     {
-        if (_tokenIndx >= AllowedTokens.length) revert IndexOutOfBounds();
+        if (isPaused) revert ContractPaused();
+        if (_tokenIndx >= AllowedPaymentTokens.length) revert InvalidTokenIndex();
 
-        Token memory tokenData = AllowedTokens[_tokenIndx];
-        
+        Token memory tokenObj = AllowedPaymentTokens[_tokenIndx];
+        //console2.log("function mint:", AllowedPaymentTokens[_tokenIndx].symbol);
+
         require(_numToMint > 0);
         if (_numToMint > MAX_PER_TX) revert MaxNumPerTxReached();
         if (_numToMint + supplyCounter.current() > MAX_SUPPLY) revert MaxSupplyReached();
-        if (msg.sender != owner) 
-            if (msg.value < _numToMint * tokenData.price) revert WrongTokenAmount(); 
+        //if (msg.sender != owner) 
+        //console2.log(msg.value, " < ", _numToMint * tokenObj.price);
+        
+        if (msg.value < _numToMint * tokenObj.price) revert WrongTokenAmount();
 
         unchecked {
             for (uint256 i = 0; i < _numToMint; i++) 
             {
-                tokenData.token.transferFrom(msg.sender, address(this), tokenData.price);
+                //bool success = tokenObj.token.approve(address(this), tokenObj.price);
+                //console2.log(success);
+                //console2.log(tokenObj.token.allowance(msg.sender, address(this)));
                 
-                _mint(_to, supplyCounter.current());
+                require(tokenObj.token.allowance(msg.sender, address(this)) >= tokenObj.price, "Insufficient Allowance");
+
+                //tokenObj.token.transferFrom(msg.sender, address(this), tokenObj.price);
+                SafeTransferLib.safeTransferFrom(tokenObj.token, msg.sender, address(this), tokenObj.price); 
+
                 supplyCounter.increment();
+                _mint(_to, supplyCounter.current());                
             }
         }
+        //console2.log(tokenObj.token.balanceOf(address(this)));
     }
 
     function pause(bool _state) external onlyOwner() {
@@ -96,14 +117,15 @@ contract VolcanoNFT is ERC721, Owned
     function setBaseURI(string memory _newBaseURI) external onlyOwner() {
         baseURI = _newBaseURI;
     }
-    function withdraw(uint256 _tokenIndx) external onlyOwner 
+
+    function withdraw(uint256 _tokenIndx) external onlyOwner //nonReentrant
     {
         if (isPaused) revert ContractPaused();
-        if (_tokenIndx >= AllowedTokens.length) revert IndexOutOfBounds();
+        if (_tokenIndx >= AllowedPaymentTokens.length) revert InvalidTokenIndex();
         //require(_tokenIndx < AllowedTokens.length, "AllowedTokens: Index out of range");
         
 
-        ERC20 theToken = AllowedTokens[_tokenIndx].token;
+        ERC20 theToken = AllowedPaymentTokens[_tokenIndx].token;
         if (theToken.balanceOf(address(this)) <= 0) revert NoTokenBalance(); 
         
         SafeTransferLib.safeTransfer(
@@ -131,10 +153,11 @@ contract VolcanoNFT is ERC721, Owned
         if (ownerOf(tokenId) == address(0))
             revert TokenDoesNotExist();
 
+        
         string memory json = Base64.encode(
             bytes(string(
                 abi.encodePacked(
-                    '{"name": "', Strings.toString(tokenId), '",',
+                    '{"name": "', Strings.toString(tokenId), '",',  // OR: tokenId.toString(); ??
                     '"image_data": "', getSvg(tokenId), '",',
                     '"description": "A volcano NFT that looks like a banana"}'
                 )
