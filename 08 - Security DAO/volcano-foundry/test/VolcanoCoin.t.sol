@@ -11,6 +11,7 @@ contract VolcanoCoinTest is Test {
 
     function setUp() public {
         coin = new VolcanoCoin();
+        console2.log("VolcanoCoin");
     }
 
     function testSupply() public {

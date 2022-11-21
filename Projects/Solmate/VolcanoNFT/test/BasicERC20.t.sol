@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.15;
 
-import "forge-std/Test.sol";
+import "lib/forge-std/src/Test.sol";
 
 import {BasicERC20} from "src/BasicERC20.sol";
 
@@ -15,6 +15,8 @@ contract BasicERC20Test is Test {
     function setUp() external 
     {
         token = new BasicERC20("LavaToken", "LAVA", 18, 1000);
+        
+        console2.logString("BasicERC20 SETUP Test");
     }
 
     // VM Cheatcodes can be found in ./lib/forge-std/src/Vm.sol
