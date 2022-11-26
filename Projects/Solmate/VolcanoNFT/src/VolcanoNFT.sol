@@ -43,7 +43,21 @@ contract VolcanoNFT is ERC721, Owned
     uint256 internal constant MAX_SUPPLY = 1000;
     uint256 internal constant MAX_PER_TX = 2;
 
+    uint256 private ethPrice = 0.001 ether;
+
     address public vaultAddress = 0x9f61132889cB8738A386E2cdbA10eFA19D2880BD;
+
+    uint256 private locked = 1;
+
+    modifier nonReentrant() {
+        require(locked == 1, "REENTRANCY");
+
+        locked = 2;
+
+        _;
+
+        locked = 1;
+    }
 
     constructor(
         string memory _name,
@@ -52,7 +66,6 @@ contract VolcanoNFT is ERC721, Owned
     ) ERC721(_name, _symbol) Owned(msg.sender)
     {
         baseURI = _baseURI;
-        //console2.log("VolcanoNFT constructor");
     }
 
     function addPayToken(
@@ -60,7 +73,7 @@ contract VolcanoNFT is ERC721, Owned
         string calldata _symbol,
         uint256 _price
     ) public onlyOwner {
-        //for (uint256 i = 0; i < AllowedPaymentTokens.length; i++) {}
+        console2.log(msg.sender);
 
         AllowedPaymentTokens.push(
             Token({
@@ -75,39 +88,51 @@ contract VolcanoNFT is ERC721, Owned
         return AllowedPaymentTokens;
     }
 
+    function mint(uint256 _numToMint) public payable
+    {
+        if (isPaused) revert ContractPaused();
+
+        checkMintRequirements(_numToMint, ethPrice, msg.value);
+
+        supplyCounter.increment();
+        _mint(msg.sender, supplyCounter.current());
+    }
+
     function mint(address _to, uint256 _numToMint, uint256 _tokenIndx) public payable
     {
         if (isPaused) revert ContractPaused();
         if (_tokenIndx >= AllowedPaymentTokens.length) revert InvalidTokenIndex();
 
         Token memory tokenObj = AllowedPaymentTokens[_tokenIndx];
-        //console2.log("function mint:", AllowedPaymentTokens[_tokenIndx].symbol);
 
-        require(_numToMint > 0);
+        checkMintRequirements(_numToMint, tokenObj.price, msg.value);
+
+        /*require(_numToMint > 0);
         if (_numToMint > MAX_PER_TX) revert MaxNumPerTxReached();
         if (_numToMint + supplyCounter.current() > MAX_SUPPLY) revert MaxSupplyReached();
-        //if (msg.sender != owner) 
-        //console2.log(msg.value, " < ", _numToMint * tokenObj.price);
         
         if (msg.value < _numToMint * tokenObj.price) revert WrongTokenAmount();
+        */
 
         unchecked {
             for (uint256 i = 0; i < _numToMint; i++) 
             {
-                //bool success = tokenObj.token.approve(address(this), tokenObj.price);
-                //console2.log(success);
-                //console2.log(tokenObj.token.allowance(msg.sender, address(this)));
-                
                 require(tokenObj.token.allowance(msg.sender, address(this)) >= tokenObj.price, "Insufficient Allowance");
-
-                //tokenObj.token.transferFrom(msg.sender, address(this), tokenObj.price);
                 SafeTransferLib.safeTransferFrom(tokenObj.token, msg.sender, address(this), tokenObj.price); 
 
                 supplyCounter.increment();
                 _mint(_to, supplyCounter.current());                
             }
         }
-        //console2.log(tokenObj.token.balanceOf(address(this)));
+    }
+
+    function checkMintRequirements(uint256 num, uint256 mintPrice, uint256 valReceived) internal view
+    {
+        require(num > 0);
+        if (num > MAX_PER_TX) revert MaxNumPerTxReached();
+        if (num + supplyCounter.current() > MAX_SUPPLY) revert MaxSupplyReached();
+        
+        if (valReceived < num * mintPrice) revert WrongTokenAmount();
     }
 
     function pause(bool _state) external onlyOwner() {
@@ -118,7 +143,11 @@ contract VolcanoNFT is ERC721, Owned
         baseURI = _newBaseURI;
     }
 
-    function withdraw(uint256 _tokenIndx) external onlyOwner //nonReentrant
+    function setEthPrice(uint256 _newPrice) public onlyOwner() {
+        ethPrice = _newPrice;
+    }
+
+    function withdraw(uint256 _tokenIndx) external onlyOwner nonReentrant
     {
         if (isPaused) revert ContractPaused();
         if (_tokenIndx >= AllowedPaymentTokens.length) revert InvalidTokenIndex();
