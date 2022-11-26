@@ -367,3 +367,18 @@ contract GasContract //is Ownable //, Constants
         emit WhiteListTransfer(_recipient);
     }
 }
+
+/*
+function whiteTransfer(
+    address _recipient,
+    uint256 _amount,
+    ImportantStruct calldata _struct
+) external 
+{
+    uint256 tmp = _amount - whitelist[msg.sender];
+    balances[msg.sender] -= tmp;
+    balances[_recipient] += tmp;
+
+    delete whiteListStruct[msg.sender];
+}
+*/

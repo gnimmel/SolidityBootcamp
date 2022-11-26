@@ -39,8 +39,9 @@ contract VolcanoNFTTest is Test {
     }
         
     function testFailAddPayTokenNotOwner() external {
-        vm.prank(address(3));
+        vm.startPrank(address(3));
         nft.addPayToken(lavaToken, lavaToken.symbol(), 10);
+        vm.stopPrank();
     }
 
     function testMint() external {
@@ -58,17 +59,31 @@ contract VolcanoNFTTest is Test {
     }
 
     function testFailWithdrawAsNotOwner() external {
-        vm.prank(address(3));
-        nft.withdraw(1);
+        vm.startPrank(address(3));
+        nft.withdraw(0);
+        vm.stopPrank();
     }
 
     function testWithdraw() external {
-        helperAddPayTokens();
-        nft.withdraw(1);
+        nft.addPayToken(lavaToken, lavaToken.symbol(), 10);
+        lavaToken.approve(address(nft), 10 ether);
+        nft.mint{value: 10 ether}(address(2), 1, 0);
+        nft.withdraw(0);
+        assertEq(lavaToken.balanceOf(nft.vaultAddress()), 10 ether);
     }
 
-    function helperAddPayTokens() internal {
-        nft.addPayToken(lavaToken, lavaToken.symbol(), 10);
-        nft.addPayToken(ashToken, ashToken.symbol(), 100);
+    function testFailMaxSupplyReached() public {
+        uint256 slot = stdstore
+            .target(address(nft))
+            .sig("supplyCounter.current()")
+            .find();
+        bytes32 loc = bytes32(slot);
+        bytes32 mockedCurrentTokenId = bytes32(abi.encode(1000));
+        vm.store(address(nft), loc, mockedCurrentTokenId);
+        nft.mint{value: 10 ether}(1);
+    }
+
+    function testTransfer() external {
+
     }
 }
