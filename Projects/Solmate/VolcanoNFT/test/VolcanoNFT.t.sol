@@ -83,7 +83,23 @@ contract VolcanoNFTTest is Test {
         nft.mint{value: 10 ether}(1);
     }
 
-    function testTransfer() external {
+    function testMintWithEth() external {
+        nft.mintTo{value: 0.001 ether}(address(1), 1);
+        uint256 slotBalance = stdstore
+            .target(address(nft))
+            .sig(nft.balanceOf.selector)
+            .with_key(address(1))
+            .find();
+        
+        uint256 balanceFirstMint = uint256(vm.load(address(nft), bytes32(slotBalance)));
+        assertEq(balanceFirstMint, 1);
 
+        nft.mintTo{value: 0.002 ether}(address(1), 2);
+        uint256 balanceSecondMint = uint256(vm.load(address(nft), bytes32(slotBalance)));
+        assertEq(balanceSecondMint, 3);
+    }
+
+    function testFailMintExceedNumAllowed() external {
+         nft.mint{value: 0.006 ether}(6);
     }
 }

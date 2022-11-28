@@ -88,14 +88,24 @@ contract VolcanoNFT is ERC721, Owned
         return AllowedPaymentTokens;
     }
 
-    function mint(uint256 _numToMint) public payable
+    function mintTo(address _to, uint256 _numToMint) public payable
     {
         if (isPaused) revert ContractPaused();
 
         checkMintRequirements(_numToMint, ethPrice, msg.value);
 
-        supplyCounter.increment();
-        _mint(msg.sender, supplyCounter.current());
+        unchecked {
+            for (uint256 i = 0; i < _numToMint; i++) 
+            {
+                supplyCounter.increment();
+                _mint(_to, supplyCounter.current());
+            }
+        }
+    }
+
+    function mint(uint256 _numToMint) public payable
+    {
+        mintTo(msg.sender, _numToMint);
     }
 
     function mint(address _to, uint256 _numToMint, uint256 _tokenIndx) public payable
@@ -106,13 +116,6 @@ contract VolcanoNFT is ERC721, Owned
         Token memory tokenObj = AllowedPaymentTokens[_tokenIndx];
 
         checkMintRequirements(_numToMint, tokenObj.price, msg.value);
-
-        /*require(_numToMint > 0);
-        if (_numToMint > MAX_PER_TX) revert MaxNumPerTxReached();
-        if (_numToMint + supplyCounter.current() > MAX_SUPPLY) revert MaxSupplyReached();
-        
-        if (msg.value < _numToMint * tokenObj.price) revert WrongTokenAmount();
-        */
 
         unchecked {
             for (uint256 i = 0; i < _numToMint; i++) 
@@ -130,7 +133,7 @@ contract VolcanoNFT is ERC721, Owned
     {
         require(num > 0);
         if (num > MAX_PER_TX) revert MaxNumPerTxReached();
-        if (num + supplyCounter.current() > MAX_SUPPLY) revert MaxSupplyReached();
+        if (num + supplyCounter.current() >= MAX_SUPPLY) revert MaxSupplyReached();
         
         if (valReceived < num * mintPrice) revert WrongTokenAmount();
     }
